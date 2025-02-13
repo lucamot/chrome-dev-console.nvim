@@ -32,6 +32,7 @@ local function start(url)
     vim.api.nvim_win_set_buf(winnr, bufnr)
     M.win = winnr
     M.buffer = bufnr
+    client.Log:enable()
 
     vim.api.nvim_create_autocmd({ 'BufDelete', 'WinClosed' }, {
       buffer = bufnr,
@@ -82,7 +83,6 @@ local function start(url)
       end)
   end)
 
-  client.Log:enable()
   client.Network:enable()
   client.Page:reload()
 end
