@@ -33,6 +33,7 @@ local function start(url)
     M.win = winnr
     M.buffer = bufnr
     client.Runtime:enable()
+    client.Log:enable()
 
     vim.api.nvim_create_autocmd({ 'BufDelete', 'WinClosed' }, {
       buffer = bufnr,
@@ -83,6 +84,12 @@ local function start(url)
       end
       vim.api.nvim_win_set_cursor(M.win, {lc+1, 0})
   end
+
+  client.Log:entryAdded(function(entry)
+      vim.schedule(function()
+          log_fn(entry.entry.level, {{value = entry.entry.text}})
+      end)
+  end)
 
   client.Runtime:consoleAPICalled(function(entry)
       vim.schedule(function()
