@@ -4,6 +4,7 @@ local M = {
 }
 
 M.config = require("chrome-dev-console.config")
+local ns = vim.api.nvim_create_namespace('chrome-dev-console')
 
 function M.setup(opts)
     M.config.setup(opts)
@@ -22,7 +23,6 @@ local function start(url)
   local request
 
   local function start_editor(result)
-    print(vim.inspect(M.config.options))
     local bufnr = vim.api.nvim_create_buf(true, true)
     local winnr = vim.api.nvim_open_win(bufnr, false, {
       win = 0,
@@ -32,7 +32,7 @@ local function start(url)
     vim.api.nvim_win_set_buf(winnr, bufnr)
     M.win = winnr
     M.buffer = bufnr
-    client.Log:enable()
+    client.Runtime:enable()
 
     vim.api.nvim_create_autocmd({ 'BufDelete', 'WinClosed' }, {
       buffer = bufnr,
@@ -64,22 +64,40 @@ local function start(url)
     end
   end)
 
-  client.Log:entryAdded(function(entry)
-      vim.schedule(function()
-          vim.api.nvim_win_set_buf(M.win, M.buffer)
+  local function log_fn(type, args)
+      vim.api.nvim_win_set_buf(M.win, M.buffer)
+      diag_inserted = false
+      for k, v in pairs(args) do
           lc = vim.api.nvim_buf_line_count(M.buffer)-1
-          vim.api.nvim_buf_set_lines(M.buffer, lc, lc, false, vim.split(entry["entry"]["text"], '\n'))
-          if entry["entry"]["level"] == 'error' then
-              local ns = vim.api.nvim_create_namespace('liveedit')
+          vim.api.nvim_buf_set_lines(M.buffer, lc, lc, false, vim.split(v["value"], '\n'))
+          if not diag_inserted and (type == 'warning' or type == 'error') then
+              diag_inserted = true
               table.insert(M.diagnostic, {
                   lnum = lc,
-                  col = string.len(entry["entry"]["text"]),
-                  message = entry["entry"]["text"],
-                  severity = vim.diagnostic.severity.ERROR,
+                  col = string.len(v["value"]),
+                  message = v["value"],
+                  severity = (type == 'warning' and vim.diagnostic.severity.WARNING or vim.diagnostic.severity.ERROR),
               })
               vim.diagnostic.set(ns, M.buffer, M.diagnostic)
           end
-          vim.api.nvim_win_set_cursor(M.win, {lc+1, 0})
+      end
+      vim.api.nvim_win_set_cursor(M.win, {lc+1, 0})
+  end
+
+  client.Runtime:consoleAPICalled(function(entry)
+      vim.schedule(function()
+          log_fn(entry.type, entry.args)
+      end)
+  end)
+
+  client.Runtime:exceptionThrown(function(entry)
+      local details = entry.exceptionDetails
+      val = details.text
+      if details['exception'] ~= nil and details['exception']['description'] ~= nil then
+          val = details.exception.description
+      end
+      vim.schedule(function()
+          log_fn('error', {{value = val}})
       end)
   end)
 
