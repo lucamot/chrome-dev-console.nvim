@@ -23,7 +23,8 @@ local function start(url)
   local request
 
   local function start_editor(result)
-    local bufnr = vim.api.nvim_create_buf(true, true)
+    local bufnr = vim.api.nvim_create_buf(true, false)
+    vim.api.nvim_buf_set_option(bufnr, "filetype", "javascript")
     local winnr = vim.api.nvim_open_win(bufnr, false, {
       win = 0,
       split = M.config.options.console_window.placement,
@@ -77,7 +78,7 @@ local function start(url)
                   lnum = lc,
                   col = string.len(v["value"]),
                   message = v["value"],
-                  severity = (type == 'warning' and vim.diagnostic.severity.WARNING or vim.diagnostic.severity.ERROR),
+                  severity = (type == 'warning' and vim.diagnostic.severity.WARN or vim.diagnostic.severity.ERROR),
               })
               vim.diagnostic.set(ns, M.buffer, M.diagnostic)
           end
