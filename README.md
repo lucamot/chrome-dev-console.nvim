@@ -1,4 +1,4 @@
-# Neovim Browser Console Plugin
+# Chrome Dev Console plugin
 
 A Neovim plugin that opens a URL in a browser (supporting Chrome DevTools Protocol) and displays browser console messages in a separate Neovim buffer within a split window.
 
