@@ -8,8 +8,8 @@ local ns = vim.api.nvim_create_namespace('chrome-dev-console')
 
 function M.setup(opts)
     M.config.setup(opts)
-    vim.api.nvim_create_user_command(M._name .. "Open", function(opts)
-        M.Open(opts.args)
+    vim.api.nvim_create_user_command(M._name .. "Console", function(opts)
+        M.Console(opts.args)
     end, {nargs = 1})
 end
 
@@ -71,14 +71,21 @@ local function start(url)
       diag_inserted = false
       for k, v in pairs(args) do
           lc = vim.api.nvim_buf_line_count(M.buffer)-1
-          vim.api.nvim_buf_set_lines(M.buffer, lc, lc, false, vim.split(v["value"], '\n'))
-          if not diag_inserted and (type == 'warning' or type == 'error') then
+          key = (v["value"] ~= nil and "value" or "description")
+          vim.api.nvim_buf_set_lines(M.buffer, lc, lc, false, vim.split(v[key], '\n'))
+          if not diag_inserted then
               diag_inserted = true
+              severity = vim.diagnostic.severity.INFO
+              if type == 'warning' then
+                  severity = vim.diagnostic.severity.WARN
+              elseif type == 'error' then
+                  severity = vim.diagnostic.severity.ERROR
+              end
               table.insert(M.diagnostic, {
                   lnum = lc,
-                  col = string.len(v["value"]),
-                  message = v["value"],
-                  severity = (type == 'warning' and vim.diagnostic.severity.WARN or vim.diagnostic.severity.ERROR),
+                  col = string.len(v[key]),
+                  message = v[key],
+                  severity = severity,
               })
               vim.diagnostic.set(ns, M.buffer, M.diagnostic)
           end
@@ -113,7 +120,7 @@ local function start(url)
   client.Page:reload()
 end
 
-function M.Open(url)
+function M.Console(url)
     require('chrome-remote.endpoints').new(url, opts or {}, function(err, response)
       if err then
         callback(err)
