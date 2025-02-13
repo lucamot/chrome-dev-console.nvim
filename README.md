@@ -20,21 +20,31 @@ A Neovim plugin that opens a URL in a browser (supporting Chrome DevTools Protoc
 ## Installation
 Using **vim-plug**:
 ```vim
-Plug 'lucamot/chrome-dev-console'
+Plug 'lucamot/chrome-dev-console.nvim'
 Plug 'lucamot/chrome-remote.nvim'
 ```
 Using **packer.nvim**:
 ```lua
 use {
-  'lucamot/chrome-dev-console',
+  'lucamot/chrome-dev-console.nvim',
   requires = { 'lucamot/chrome-remote.nvim' }
 }
+```
+
+Using **Lazy.nvim**:
+```vim
+require('lazy').setup({
+    {
+        'lucamot/chrome-dev-console.nvim',
+        dependencies = { 'lucamot/chrome-remote.nvim' }
+    }
+})
 ```
 
 ## Configuration
 Customize the plugin in `init.lua`:
 ```lua
-require('browser-console').setup({
+require('chrome-dev-console').setup({
   console_window = {
     height = 10, -- Height of the split window
     placement = 'bottom' -- 'left', 'right', 'top', 'bottom'
