@@ -33,12 +33,10 @@ use {
 
 Using **Lazy.nvim**:
 ```vim
-require('lazy').setup({
-    {
-        'lucamot/chrome-dev-console.nvim',
-        dependencies = { 'lucamot/chrome-remote.nvim' }
-    }
-})
+{
+    'lucamot/chrome-dev-console.nvim',
+    dependencies = { 'lucamot/chrome-remote.nvim' }
+}
 ```
 
 ## Configuration
@@ -47,7 +45,7 @@ Customize the plugin in `init.lua`:
 require('chrome-dev-console').setup({
   console_window = {
     height = 10, -- Height of the split window
-    placement = 'bottom' -- 'left', 'right', 'top', 'bottom'
+    placement = 'below' -- 'left', 'right', 'above', 'below'
   },
   auto_close_page = true, -- Close webpage when console buffer is deleted
 })
@@ -56,7 +54,7 @@ require('chrome-dev-console').setup({
 ## Usage
 Open a URL in the browser and capture console logs:
 ```vim
-:CdcOpen http://example.com
+:CdcConsole http://example.com
 ```
 
 ## License
