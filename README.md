@@ -57,6 +57,13 @@ Open a URL in the browser and capture console logs:
 :CdcConsole http://example.com
 ```
 
+Once a page is open you can enter commands like in the browser console:
+```vim
+:CdcCommand body.document.outerHTML
+```
+
+Note: commands are wrapped into `console.log()`
+
 ## License
 [MIT](LICENSE)
 
