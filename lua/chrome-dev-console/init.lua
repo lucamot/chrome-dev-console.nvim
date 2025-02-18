@@ -11,10 +11,14 @@ function M.setup(opts)
     vim.api.nvim_create_user_command(M._name .. "Console", function(opts)
         M.Console(opts.args)
     end, {nargs = 1})
+    vim.api.nvim_create_user_command(M._name .. "Command", function(opts)
+        M.Command(opts.args)
+    end, {nargs = 1})
 end
 
 local function start(url)
   local client = require('chrome-remote.chrome').new()
+  M.client = client
   local err = client:open_url(url)
   if err then
     print(vim.inspect(err))
@@ -128,6 +132,11 @@ function M.Console(url)
         coroutine.wrap(start)(response.content.webSocketDebuggerUrl)
       end
     end)
+end
+
+function M.Command(cmd)
+    res = M.client.Runtime:evaluate({expression = 'console.log(' .. cmd .. ')', returnByValue = false, generatePreview = true, includeCommandLineAPI = true, objectGroup = "console", replMode = true, silent = false, userGesture = true, allowUnsafeEvalBlockedByCSP = false, awaitPromise = false})
+    print(vim.inspect(res))
 end
 
 return M
