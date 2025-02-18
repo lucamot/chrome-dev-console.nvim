@@ -66,7 +66,9 @@ Once a page is open you can enter commands like in the browser console:
 Note: commands are wrapped into `console.log()`
 
 ## Demo
-[Demo](assets/demo1.mp4)
+https://github.com/user-attachments/assets/9e7f422d-5c1e-4cab-93db-cbebd0d5b981
+
+
 
 ## ☕ Support My Work  
 If you find this plugin useful, consider supporting me:  
