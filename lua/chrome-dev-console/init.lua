@@ -27,7 +27,7 @@ local function start(url)
   local request
 
   local function start_editor(result)
-    local bufnr = vim.api.nvim_create_buf(true, false)
+    local bufnr = vim.api.nvim_create_buf(true, true)
     vim.api.nvim_buf_set_option(bufnr, "filetype", "javascript")
     local winnr = vim.api.nvim_open_win(bufnr, false, {
       win = 0,
