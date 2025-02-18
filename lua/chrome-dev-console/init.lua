@@ -76,27 +76,29 @@ local function start(url)
       for k, v in pairs(args) do
           lc = vim.api.nvim_buf_line_count(M.buffer)-1
           key = (v["value"] ~= nil and "value" or "description")
-          vim.api.nvim_buf_set_lines(M.buffer, lc, lc, false, vim.split(v[key], '\n'))
-          if not diag_inserted then
-              diag_inserted = true
-              severity = vim.diagnostic.severity.INFO
-              if type == 'warning' then
-                  severity = vim.diagnostic.severity.WARN
-              elseif type == 'error' then
-                  severity = vim.diagnostic.severity.ERROR
+          if v[key] ~= nil then
+              vim.api.nvim_buf_set_lines(M.buffer, lc, lc, false, vim.split(v[key], '\n'))
+              if not diag_inserted then
+                  diag_inserted = true
+                  severity = vim.diagnostic.severity.INFO
+                  if type == 'warning' then
+                      severity = vim.diagnostic.severity.WARN
+                  elseif type == 'error' then
+                      severity = vim.diagnostic.severity.ERROR
+                  end
+                  table.insert(M.diagnostic, {
+                      lnum = lc,
+                      col = string.len(v[key]),
+                      message = v[key],
+                      severity = severity,
+                  })
+                  vim.diagnostic.set(ns, M.buffer, M.diagnostic)
               end
-              table.insert(M.diagnostic, {
-                  lnum = lc,
-                  col = string.len(v[key]),
-                  message = v[key],
-                  severity = severity,
-              })
-              vim.diagnostic.set(ns, M.buffer, M.diagnostic)
-          end
-          if v["preview"] ~= nil then
-              for kk, vv in pairs(v["preview"]["properties"]) do
-                  lc = lc + 1
-                  vim.api.nvim_buf_set_lines(M.buffer, lc, lc, false, {"\t" .. vv["name"] .. " - " .. vim.split(vv["value"], '\n')[1]})
+              if v["preview"] ~= nil then
+                  for kk, vv in pairs(v["preview"]["properties"]) do
+                      lc = lc + 1
+                      vim.api.nvim_buf_set_lines(M.buffer, lc, lc, false, {"\t" .. vv["name"] .. " - " .. vim.split(vv["value"], '\n')[1]})
+                  end
               end
           end
       end
