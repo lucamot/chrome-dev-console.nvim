@@ -136,7 +136,6 @@ end
 
 function M.Command(cmd)
     res = M.client.Runtime:evaluate({expression = 'console.log(' .. cmd .. ')', returnByValue = false, generatePreview = true, includeCommandLineAPI = true, objectGroup = "console", replMode = true, silent = false, userGesture = true, allowUnsafeEvalBlockedByCSP = false, awaitPromise = false})
-    print(vim.inspect(res))
 end
 
 return M
