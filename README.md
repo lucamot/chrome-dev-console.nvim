@@ -65,6 +65,12 @@ Once a page is open you can enter commands like in the browser console:
 
 Note: commands are wrapped into `console.log()`
 
+## ☕ Support My Work  
+If you find this plugin useful, consider supporting me:  
+
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-%23FFDD00?style=flat&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/lucamot)
+
+
 ## License
 [MIT](LICENSE)
 
