@@ -59,7 +59,8 @@ Open a URL in the browser and capture console logs:
 
 Once a page is open you can enter commands like in the browser console:
 ```vim
-:CdcCommand body.document.outerHTML
+:CdcCommand document.body.outerHTML
+:CdcCommand $("body") // if the page has jQuery
 ```
 
 Note: commands are wrapped into `console.log()`
