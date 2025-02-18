@@ -93,6 +93,12 @@ local function start(url)
               })
               vim.diagnostic.set(ns, M.buffer, M.diagnostic)
           end
+          if v["preview"] ~= nil then
+              for kk, vv in pairs(v["preview"]["properties"]) do
+                  lc = lc + 1
+                  vim.api.nvim_buf_set_lines(M.buffer, lc, lc, false, {"\t" .. vv["name"] .. " - " .. vim.split(vv["value"], '\n')[1]})
+              end
+          end
       end
       vim.api.nvim_win_set_cursor(M.win, {lc+1, 0})
   end
